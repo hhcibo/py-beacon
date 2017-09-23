@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import time
-from mock import patch
 import beacon_empfang
 import logging
 log = logging.getLogger(__name__)
