@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import requests
+import requests.exceptions
 import time
 import logging
+import datetime
+
 log = logging.getLogger(__name__)
 
 IN_VEHICLE = {}
 THRESHOLD = 15
 
-BACKEND = "http://207.154.234.13:80"
-
+BACKEND = "http://207.154.234.13:80/"
+json_time_key_mapping = {"start": "startTime",
+                   "end": "endTime"}
 
 
 class Passenger(object):
@@ -24,16 +28,19 @@ class Passenger(object):
     def reset_expire_time(self):
         self.expire_time = int(time.time()) + THRESHOLD
 
-    def __hash__(self):
-        return hash(self.uuid)
-
 
 def send_to_backend(passenger, type):
-    if "8ec1f" in passenger.uuid:
-        endpoint = BACKEND
-        requests.post(endpoint, json={"uuid": passenger.uuid,
-                                      "time": passenger.time,
-                                      "type": type})
+    # For Demo Reasons only use our Testbeacon
+    if "8ec1f7b1-28ce-4bee-8acc" in passenger.uuid:
+        try:
+            key = json_time_key_mapping.get(type)
+            message = {
+                "uuid": passenger.uuid,
+                key: datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+            requests.post(BACKEND, data=message)
+        except requests.exceptions.ConnectionError, e:
+            print "Could not post to endpoint %s" % BACKEND
+            print e
 
 
 def remove_passengers(found):
