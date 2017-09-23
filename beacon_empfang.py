@@ -30,18 +30,18 @@ import cibo
 #         t.start()
 #         return t
 #
-#     def sanitize(self):
-#         """Remove expire beacons"""
-#         from cibo.eval_beacon import missing
-#         now = int(time.time())
-#         for id in self.ts.keys():
-#             if self.ts[id] < now:
-#                 missing(id)
-#                 del self.aRssi[id]
-#                 del self.qRssi[id]
-#                 del self.ts[id]
-#                 print("clean uid: ", str(id))
-#
+    # def sanitize(self):
+    #     """Remove expire beacons"""
+    #     from cibo.eval_beacon import missing
+    #     now = int(time.time())
+    #     for id in self.ts.keys():
+    #         if self.ts[id] < now:
+    #             missing(id)
+    #             del self.aRssi[id]
+    #             del self.qRssi[id]
+    #             del self.ts[id]
+    #             print("clean uid: ", str(id))
+
 #     def add(self, id, value):
 #         """Add new rssi for calculation."""
 #         if (id not in self.qRssi):
