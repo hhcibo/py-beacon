@@ -8,21 +8,23 @@ IN_VEHICLE = {}
 THRESHOLD = 5
 
 
-class BLEMessage(object):
-
-    def __init__(self, unformatted_string):
-        splitted = unformatted_string.split(",")
-        self.address = splitted[1]
-        # We need to set a timezone, or at least now the default we use here
-        self.time = time.time()
-        self.dezibel = splitted[-1]
-
-
 class Passenger(object):
 
-    def __init__(self, uuid):
-        self.uuid = uuid
+    def __init__(self, ble_data):
+        splitted = ble_data.split(",")
+        self.uuid = splitted[1]
+        print splitted
+        # We need to set a timezone, or at least now the default we use here
+        # if we send it to the backend
+        self.time = time.time()
+        self.dezibel = splitted[-1]
         self.expire_time = int(time.time()) + THRESHOLD
+
+    def reset_expire_time(self):
+        self.expire_time = int(time.time()) + THRESHOLD
+
+    def __eq__(self, other):
+        return other.uuid == self.uuid
 
 
 def send_to_backend(message, type):
@@ -41,14 +43,8 @@ def remove_passengers(found):
             send_to_backend(id, 'remove')
 
 
-def add_passengers(beacon):
-    try:
-        message = BLEMessage(beacon)
-    except Exception, e:
-        log.error(e)
-        return
-    if message.address not in IN_VEHICLE:
-        passenger = Passenger(message.address)
-        IN_VEHICLE[message.address] = passenger
-        send_to_backend(message, 'start')
-        #reset_expire_time_of Passenger
+def add_passengers(passenger):
+    if passenger.uuid not in IN_VEHICLE:
+        IN_VEHICLE[passenger.uuid] = passenger
+        send_to_backend(passenger.uuid, 'start')
+    passenger.reset_expire_time()
