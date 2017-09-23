@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import requests
 import time
 import logging
 log = logging.getLogger(__name__)
 
 IN_VEHICLE = {}
 THRESHOLD = 15
+
+BACKEND = "http://207.154.234.13:80"
+
 
 
 class Passenger(object):
@@ -24,11 +28,12 @@ class Passenger(object):
         return hash(self.uuid)
 
 
-def send_to_backend(uuid, type):
-    # Post request to backend
-    if "8ec1f" in uuid:
-        print type
-        print uuid
+def send_to_backend(passenger, type):
+    if "8ec1f" in passenger.uuid:
+        endpoint = BACKEND
+        requests.post(endpoint, json={"uuid": passenger.uuid,
+                                      "time": passenger.time,
+                                      "type": type})
 
 
 def remove_passengers(found):
@@ -36,14 +41,15 @@ def remove_passengers(found):
     now = int(time.time())
     for id in IN_VEHICLE.keys():
         if IN_VEHICLE[id].expire_time < now:
+            passenger = IN_VEHICLE[id]
             del IN_VEHICLE[id]
-            print("Passenger left ", str(id))
-            send_to_backend(id, 'remove')
+            print("Passenger left ", str(passenger.uuid))
+            send_to_backend(passenger, 'end')
 
 
 def add_passengers(passenger):
     if passenger.uuid not in IN_VEHICLE:
         IN_VEHICLE[passenger.uuid] = passenger
-        send_to_backend(passenger.uuid, 'start')
+        send_to_backend(passenger, 'start')
         print("Passenger appeared ", str(passenger.uuid))
     passenger.reset_expire_time()
