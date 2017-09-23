@@ -5,7 +5,7 @@ import logging
 log = logging.getLogger(__name__)
 
 IN_VEHICLE = {}
-THRESHOLD = 5
+THRESHOLD = 15
 
 
 class Passenger(object):
@@ -13,7 +13,6 @@ class Passenger(object):
     def __init__(self, ble_data):
         splitted = ble_data.split(",")
         self.uuid = splitted[1]
-        print splitted
         # We need to set a timezone, or at least now the default we use here
         # if we send it to the backend
         self.time = time.time()
@@ -27,10 +26,11 @@ class Passenger(object):
         return other.uuid == self.uuid
 
 
-def send_to_backend(message, type):
+def send_to_backend(uuid, type):
     # Post request to backend
-    print message
-    print type
+    if "8ec1f" in uuid:
+        print type
+        print uuid
 
 
 def remove_passengers(found):
