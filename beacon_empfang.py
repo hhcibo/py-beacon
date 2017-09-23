@@ -31,9 +31,10 @@ class Scanner():
             for data in self.scan():
                 try:
                     splitted = data.split(",")
-                    if splitted[1] not in found:
+                    if splitted[1] not in found and int(splitted[-1]) >= -50 :
                         found.append(splitted[1])
                         without_dupes.append(Passenger(splitted[1]))
+                        print splitted
                 except Exception, e:
                     print e
             remove_passengers(found)
