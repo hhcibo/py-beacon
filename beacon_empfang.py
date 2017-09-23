@@ -26,15 +26,18 @@ class Scanner():
         from cibo.eval_beacon import add_passengers, remove_passengers, \
             Passenger
         while True:
-            # Remove duplicate passengers here
-            found = set()
+            found = []
+            without_dupes = []
             for data in self.scan():
                 try:
-                    found.add(Passenger(data))
-                except:
-                    continue
+                    splitted = data.split(",")
+                    if splitted[1] not in found:
+                        found.append(splitted[1])
+                        without_dupes.append(Passenger(splitted[1]))
+                except Exception, e:
+                    print e
             remove_passengers(found)
-            for passenger in found:
+            for passenger in without_dupes:
                 add_passengers(passenger)
             time.sleep(3)
 

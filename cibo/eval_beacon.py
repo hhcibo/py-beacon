@@ -11,12 +11,10 @@ THRESHOLD = 15
 class Passenger(object):
 
     def __init__(self, ble_data):
-        splitted = ble_data.split(",")
-        self.uuid = splitted[1]
+        self.uuid = ble_data
         # We need to set a timezone, or at least now the default we use here
         # if we send it to the backend
         self.time = time.time()
-        self.dezibel = splitted[-1]
         self.expire_time = int(time.time()) + THRESHOLD
 
     def reset_expire_time(self):
@@ -47,4 +45,5 @@ def add_passengers(passenger):
     if passenger.uuid not in IN_VEHICLE:
         IN_VEHICLE[passenger.uuid] = passenger
         send_to_backend(passenger.uuid, 'start')
+        print("Passenger appeared ", str(passenger.uuid))
     passenger.reset_expire_time()
