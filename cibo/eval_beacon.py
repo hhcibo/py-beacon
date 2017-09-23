@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import pendulum
+import time
 from mock import patch
 import beacon_empfang
 import logging
@@ -37,7 +37,7 @@ class BLEMessage(object):
         splitted = unformatted_string.split(",")
         self.address = splitted[1]
         # We need to set a timezone, or at least now the default we use here
-        self.time = pendulum.now()
+        self.time = time.now()
         self.dezibel = splitted[-1]
 
 
