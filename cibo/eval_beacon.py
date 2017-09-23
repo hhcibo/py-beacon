@@ -22,8 +22,8 @@ class Passenger(object):
     def reset_expire_time(self):
         self.expire_time = int(time.time()) + THRESHOLD
 
-    def __eq__(self, other):
-        return other.uuid == self.uuid
+    def __hash__(self):
+        return hash(self.uuid)
 
 
 def send_to_backend(uuid, type):
