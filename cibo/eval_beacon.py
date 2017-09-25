@@ -12,8 +12,7 @@ IN_VEHICLE = {}
 THRESHOLD = 15
 
 BACKEND = "http://207.154.234.13:80/"
-json_time_key_mapping = {"start": "startTime",
-                   "end": "endTime"}
+json_time_key_mapping = {"start": "startTime", "end": "endTime"}
 
 
 class Passenger(object):
@@ -50,7 +49,6 @@ def remove_passengers(found):
         if IN_VEHICLE[id].expire_time < now:
             passenger = IN_VEHICLE[id]
             del IN_VEHICLE[id]
-            print("Passenger left ", str(passenger.uuid))
             send_to_backend(passenger, 'end')
 
 
@@ -58,5 +56,4 @@ def add_passengers(passenger):
     if passenger.uuid not in IN_VEHICLE:
         IN_VEHICLE[passenger.uuid] = passenger
         send_to_backend(passenger, 'start')
-        print("Passenger appeared ", str(passenger.uuid))
     passenger.reset_expire_time()
